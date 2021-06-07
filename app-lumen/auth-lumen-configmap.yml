@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-lumen-configmap
+  namespace: app-lumen
+data:
+  host: auth-lumen-service.auth-lumen

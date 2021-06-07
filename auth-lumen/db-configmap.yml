@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-configmap
+  namespace: app-lumen
+data:
+  host_write: mysql-0.mysql.db-lumen
+  host_read: mysql-read.db-lumen
+  db_name: auth-lumen

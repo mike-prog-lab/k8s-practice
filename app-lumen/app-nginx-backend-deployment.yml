@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-nginx
+  namespace: app-lumen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-nginx
+  template:
+    metadata:
+      labels:
+        app: app-nginx
+    spec:
+      containers:
+      - name: app-nginx
+        image: nginx:1.21.0-alpine
+        resources:
+          limits:
+            memory: "60Mi"
+            cpu: "300m"
+        ports:
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        - containerPort: 443
+          protocol: TCP
+          name: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-nginx-service
+  namespace: auth-lumen
+  labels:
+    tier: backend
+spec:
+  selector:
+    app: app-nginx
+    tier: backend
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  - port: 443
+    targetPort: 443
+    name: https
