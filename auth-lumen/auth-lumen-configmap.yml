@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-lumen-configmap
+data:
+  app_name: AuthLumen
+  db_connection: mysql

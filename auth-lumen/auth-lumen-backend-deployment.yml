@@ -15,18 +15,33 @@ spec:
     spec:
       containers:
       - name: auth-lumen
-        image: docker.pkg.github.com/mike-prog-lab/auth-tasks-lumen/auth-tl-php-fpm:development
+        image: docker.pkg.github.com/mike-prog-lab/auth-tasks-lumen/auth-tl-php-fpm:1.2.1-dev
         env:
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: auth-lumen-configmap
+              key: app_name
         - name: APP_KEY
           valueFrom:
             secretKeyRef:
               name: auth-lumen-secret
               key: key
+        - name: DB_CONNECTION
+          valueFrom:
+            configMapKeyRef:
+              name: auth-lumen-configmap
+              key: db_connection
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: db-configmap
+              key: port
         - name: DB_HOST
           valueFrom:
             configMapKeyRef:
               name: db-configmap
-              key: host_write
+              key: host
         - name: DB_DATABASE
           valueFrom:
             configMapKeyRef:
