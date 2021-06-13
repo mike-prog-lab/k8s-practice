@@ -1,13 +1,16 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pvc
-  namespace: db-lumen
+  name: code
+  namespace: auth-lumen
 spec:
   resources:
     requests:
-      storage: 10Gi
+      storage: 1Gi
   volumeMode: Filesystem
-  storageClassName: manual
   accessModes:
     - ReadWriteOnce
+  storageClassName: manual
+  selector:
+    matchLabels:
+      pv: local

@@ -13,9 +13,19 @@ spec:
       labels:
         app: auth-nginx
     spec:
+      volumes:
+        - name: code
+          persistentVolumeClaim:
+            claimName: code
+        - name: config
+          configMap:
+            name: nginx-config
+            items:
+              - key: config
+                path: site.conf
       containers:
       - name: auth-nginx
-        image: nginx:1.21.0-alpine
+        image: nginx:1.21.0
         resources:
           limits:
             memory: "60Mi"
@@ -27,6 +37,12 @@ spec:
         - containerPort: 443
           protocol: TCP
           name: https
+        volumeMounts:
+          # - name: code
+          #   mountPath: /var/www/html
+          #   subPath: code
+          - name: config
+            mountPath: /etc/nginx/conf.d
 ---
 apiVersion: v1
 kind: Service

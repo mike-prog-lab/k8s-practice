@@ -13,6 +13,10 @@ spec:
       labels:
         app: auth-lumen
     spec:
+      volumes:
+        - name: code
+          persistentVolumeClaim:
+            claimName: code
       containers:
       - name: auth-lumen
         image: docker.pkg.github.com/mike-prog-lab/auth-tasks-lumen/auth-tl-php-fpm:1.2.1-dev
@@ -61,8 +65,20 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+        # volumeMounts:
+        #   - name: code
+        #     mountPath: /var/www/html
+        #     subPath: code
         ports:
         - containerPort: 9000
+      initContainers:
+        - name: init-systcl
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: code
+              mountPath: /var/www/html
+              subPath: code
       imagePullSecrets:
       - name: regcred
 ---
