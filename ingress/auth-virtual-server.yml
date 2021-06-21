@@ -1,0 +1,12 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: auth-virtual-server
+  namespace: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "250m"
+spec:
+  host: auth.test.lumen.eml.ua
+  routes:
+    - path: /
+      route: auth-lumen/auth-router

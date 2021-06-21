@@ -6,7 +6,7 @@ metadata:
   labels:
     app: proxysql
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: proxysql
@@ -23,6 +23,9 @@ spec:
       containers:
       - image: severalnines/proxysql:1.4.12
         name: proxysql
+        securityContext:
+          # allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
         resources:
           limits:
             cpu: 100m
