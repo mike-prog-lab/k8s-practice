@@ -34,7 +34,7 @@ spec:
       initContainers:
         - name: app-data
           image: ghcr.io/mike-prog-lab/auth-tasks-lumen/auth-tl-php-fpm:development
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           command: ["sh", "-c", "cp -r /var/www/html/public/. /code/public"]
           securityContext:
             runAsUser: 1000
@@ -47,6 +47,11 @@ spec:
           securityContext:
             runAsUser: 1000
           env:
+          - name: APP_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: auth-lumen-configmap
+                key: env
           - name: APP_NAME
             valueFrom:
               configMapKeyRef:
@@ -109,7 +114,7 @@ spec:
           resources:
             limits:
               memory: "60Mi"
-              cpu: "150m"
+              cpu: "100m"
           ports:
           - containerPort: 8080
             protocol: TCP

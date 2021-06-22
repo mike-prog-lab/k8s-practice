@@ -4,6 +4,6 @@ metadata:
   name: db-configmap
   namespace: app-lumen
 data:
-  host_write: mysql-0.mysql.db-lumen
-  host_read: mysql-read.db-lumen
+  host: proxysql.db-lumen
+  port: '6033'
   db_name: app-lumen

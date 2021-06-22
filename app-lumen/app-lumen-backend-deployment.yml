@@ -12,16 +12,49 @@ spec:
     metadata:
       labels:
         app: app-lumen
+        tier: backend
     spec:
+      volumes:
+        - name: public-code
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: nginx-configmap
+            items:
+              - key: config
+                path: site.conf
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1001
+      initContainers:
+        - name: code-init
+          image: ghcr.io/mike-prog-lab/tasks-lumen/tl-php-fpm:development
+          imagePullPolicy: Always
+          command: ["sh", "-c", "cp -r /var/www/html/public/. /code/public"]
+          volumeMounts:
+            - name: public-code
+              mountPath: /code/public
       containers:
       - name: app-lumen
-        image: docker.pkg.github.com/mike-prog-lab/tasks-lumen/tl-php-fpm:development
+        image: ghcr.io/mike-prog-lab/tasks-lumen/tl-php-fpm:development
+        imagePullPolicy: IfNotPresent
         env:
         - name: APP_KEY
           valueFrom:
             secretKeyRef:
               name: app-lumen-secret
               key: key
+        - name: AUTH_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-lumen-configmap
+              key: app_name
+        - name: AUTH_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: app-lumen-configmap
+              key: env
         - name: AUTH_ROOT
           valueFrom:
             configMapKeyRef:
@@ -42,6 +75,11 @@ spec:
             configMapKeyRef:
               name: db-configmap
               key: host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: db-configmap
+              key: port
         - name: DB_DATABASE
           valueFrom:
             configMapKeyRef:
@@ -60,9 +98,27 @@ spec:
         resources:  
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "150m"
         ports:  
-        - containerPort: 9000
+          - containerPort: 9000
+        volumeMounts:
+          - name: public-code
+            mountPath: /var/www/html/public
+      - name: nginx
+        image: nginxinc/nginx-unprivileged
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+            name: http
+        volumeMounts:
+          - name: public-code
+            mountPath: /var/www/html/public
+          - name: nginx-config
+            mountPath: /etc/nginx/conf.d
       imagePullSecrets:
       - name: regcred
 ---
@@ -81,3 +137,8 @@ spec:
   - port: 9000
     targetPort: 9000
     protocol: TCP
+    name: fpm
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http

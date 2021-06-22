@@ -4,5 +4,7 @@ metadata:
   name: app-lumen-configmap
   namespace: app-lumen
 data:
+  app_name: TaskLumen
   secure_schema: 'false'
   auth_port: '80'
+  env: production

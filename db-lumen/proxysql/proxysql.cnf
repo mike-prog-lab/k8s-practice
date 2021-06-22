@@ -40,7 +40,8 @@ mysql_servers =
 )
 mysql_users =
 (
-        { username = "auth_lumen_user" , password = "password", default_hostgroup = 10, active = 1 }
+        { username = "auth_lumen_user" , password = "password", default_hostgroup = 10, active = 1 },
+        { username = "task_lumen_user" , password = "password", default_hostgroup = 10, active = 1 }
 )
 mysql_query_rules =
 (

@@ -5,3 +5,4 @@ metadata:
 data:
   app_name: AuthLumen
   db_connection: mysql
+  env: production
